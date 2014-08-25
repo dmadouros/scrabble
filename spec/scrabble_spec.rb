@@ -28,7 +28,7 @@ describe Scrabble do
       expect(Scrabble.highest_score_from(word_list)).to eq 'home'
     end
 
-    xit 'returns the shortest word in the case of a tie' do
+    it 'returns the shortest word in the case of a tie' do
       expect(Scrabble.highest_score_from(['hello', 'word', 'sound'])).to eq 'word'
     end
 
