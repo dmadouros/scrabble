@@ -1,38 +1,74 @@
 require "scrabble/version"
 
 module Scrabble
-  ALL_TILES = 7
-  SCORES = {
-    "A" => 1, "B" => 3, "C" => 3, "D" => 2,
-    "E" => 1, "F" => 4, "G" => 2, "H" => 4,
-    "I" => 1, "J" => 8, "K" => 5, "L" => 1,
-    "M" => 3, "N" => 1, "O" => 1, "P" => 3,
-    "Q" => 10, "R" => 1, "S" => 1, "T" => 1,
-    "U" => 1, "V" => 4, "W" => 4, "X" => 8,
-    "Y" => 4, "Z" => 10
-  }
-
   def self.score(word)
-    return 0 if word.nil? || word.empty?
-
-    word.chars.reduce(0) do |result, letter|
-      result + SCORES[letter.upcase]
-    end
+    Word.new(word).score
   end
 
   def self.highest_score_from(words)
-    words.max do |word1, word2|
-      if (score(word1) == score(word2))
-        resolve_tie_between(word1, word2)
-      else
-        score(word1) <=> score(word2)
+    words.map { |word| Word.new(word) }.max.text
+  end
+
+  class Word
+    SCORES = {
+      "A" => 1, "B" => 3, "C" => 3, "D" => 2,
+      "E" => 1, "F" => 4, "G" => 2, "H" => 4,
+      "I" => 1, "J" => 8, "K" => 5, "L" => 1,
+      "M" => 3, "N" => 1, "O" => 1, "P" => 3,
+      "Q" => 10, "R" => 1, "S" => 1, "T" => 1,
+      "U" => 1, "V" => 4, "W" => 4, "X" => 8,
+      "Y" => 4, "Z" => 10
+    }
+
+    attr_reader :text
+
+    def initialize(text)
+      @text = text
+    end
+
+    def score
+      return 0 if text.nil? || text.empty?
+
+      text.chars.reduce(0) do |result, char|
+        result + SCORES[char.upcase]
       end
+    end
+
+    def length
+      text.length
+    end
+
+    private
+
+    def <=>(other)
+      WordComparator.new(self, other).execute
     end
   end
 
-  def self.resolve_tie_between(word1, word2)
-    return 1 if word1.length == ALL_TILES
-    return -1 if word2.length == ALL_TILES
-    word2.length <=> word1.length
+  class WordComparator
+    MAX_LETTERS = 7
+
+    def initialize(this, that)
+      @this = this
+      @that = that
+    end
+
+    def execute
+      tie? ? resolve_tie : this.score <=> that.score
+    end
+
+    private
+
+    attr_reader :this, :that
+
+    def tie?
+      this.score == that.score
+    end
+
+    def resolve_tie
+      return 1 if this.length == MAX_LETTERS
+      return -1 if that.length == MAX_LETTERS
+      that.length <=> this.length
+    end
   end
 end
