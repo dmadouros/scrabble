@@ -21,17 +21,18 @@ module Scrabble
   end
 
   def self.highest_score_from(words)
-    words.reduce('') do |best_word, word|
-      two_words = [best_word, word]
-      next resolve_tie_between(two_words) if score(best_word) == score(word)
-
-      two_words.max_by { |w| score(w) }
+    words.max do |word1, word2|
+      if (score(word1) == score(word2))
+        resolve_tie_between(word1, word2)
+      else
+        score(word1) <=> score(word2)
+      end
     end
   end
 
-  def self.resolve_tie_between(two_words)
-    return two_words.first if two_words.first.length == ALL_TILES
-    return two_words.last if two_words.last.length == ALL_TILES
-    return two_words.min_by { |word| word.length }
+  def self.resolve_tie_between(word1, word2)
+    return 1 if word1.length == ALL_TILES
+    return -1 if word2.length == ALL_TILES
+    word2.length <=> word1.length
   end
 end
