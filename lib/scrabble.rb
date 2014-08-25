@@ -27,11 +27,9 @@ module Scrabble
     end
 
     def score
-      return 0 if text.nil? || text.empty?
+      return 0 unless present?
 
-      text.chars.reduce(0) do |result, char|
-        result + SCORES[char.upcase]
-      end
+      chars.map { |char| SCORES[char] }.reduce(:+)
     end
 
     def length
@@ -42,6 +40,14 @@ module Scrabble
 
     def <=>(other)
       WordComparator.new(self, other).execute
+    end
+
+    def chars
+      text.upcase.chars
+    end
+
+    def present?
+      !text.nil? && !text.empty?
     end
   end
 
