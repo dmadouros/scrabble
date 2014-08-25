@@ -1,0 +1,3 @@
+module Scrabble
+  VERSION = "0.0.1"
+end
