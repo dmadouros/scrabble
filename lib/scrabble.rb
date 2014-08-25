@@ -18,4 +18,8 @@ module Scrabble
       result + SCORES[letter.upcase]
     end
   end
+
+  def self.highest_score_from(words)
+    words.max_by { |word| score(word) }
+  end
 end
