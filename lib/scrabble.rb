@@ -39,7 +39,7 @@ module Scrabble
     private
 
     def <=>(other)
-      WordComparator.new(self, other).execute
+      WordComparator.new(self, other).compare
     end
 
     def chars
@@ -51,27 +51,37 @@ module Scrabble
     end
   end
 
-  class WordComparator
-    MAX_LETTERS = 7
-
+  class ScrabbleComparator
     def initialize(this, that)
       @this = this
       @that = that
     end
 
-    def execute
-      tie? ? resolve_tie : this.score <=> that.score
-    end
-
     private
 
     attr_reader :this, :that
+  end
 
+  class WordComparator < ScrabbleComparator
+    def compare
+      ScoreComparator.new(this, that).tie? ? LengthComparator.new(this, that).compare : ScoreComparator.new(this, that).compare
+    end
+  end
+
+  class ScoreComparator < ScrabbleComparator
     def tie?
-      this.score == that.score
+      compare == 0
     end
 
-    def resolve_tie
+    def compare
+      this.score <=> that.score
+    end
+  end
+
+  class LengthComparator < ScrabbleComparator
+    MAX_LETTERS = 7
+
+    def compare
       return 1 if this.length == MAX_LETTERS
       return -1 if that.length == MAX_LETTERS
       that.length <=> this.length
