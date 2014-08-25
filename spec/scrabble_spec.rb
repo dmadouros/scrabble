@@ -17,11 +17,11 @@ describe Scrabble do
       expect(Scrabble.score('')).to eq 0
     end
 
-    xit 'scores an nil word as 0' do
+    it 'scores an nil word as 0' do
       expect(Scrabble.score(nil)).to eq 0
     end
 
-    xit 'scores a single letter' do
+    it 'scores a single letter' do
       expect(Scrabble.score('a')).to eq 1
       expect(Scrabble.score('f')).to eq 4
     end
