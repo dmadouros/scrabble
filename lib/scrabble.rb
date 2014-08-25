@@ -20,6 +20,15 @@ module Scrabble
   end
 
   def self.highest_score_from(words)
-    words.max_by { |word| score(word) }
+    words.reduce('') do |best_word, word|
+      two_words = [best_word, word]
+      next resolve_tie_between(two_words) if score(best_word) == score(word)
+
+      two_words.max_by { |w| score(w) }
+    end
+  end
+
+  def self.resolve_tie_between(two_words)
+    return two_words.min_by { |word| word.length }
   end
 end

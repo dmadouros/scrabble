@@ -32,7 +32,7 @@ describe Scrabble do
       expect(Scrabble.highest_score_from(['hello', 'word', 'sound'])).to eq 'word'
     end
 
-    xit 'returns the word that uses all 7 letters in case of a tie' do
+    it 'returns the word that uses all 7 letters in case of a tie' do
       expect(Scrabble.highest_score_from(['home', 'word', 'silence'])).to eq 'silence'
     end
 
