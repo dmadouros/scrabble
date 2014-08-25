@@ -16,14 +16,14 @@ describe Scrabble do
       expect(Scrabble.score('f')).to eq 4
     end
 
-    xit 'scores a word' do
+    it 'scores a word' do
       expect(Scrabble.score('home')).to eq 9
       expect(Scrabble.score('sound')).to eq 6
       expect(Scrabble.score('word')).to eq 8
       expect(Scrabble.score('hello')).to eq 8
     end
 
-    xit 'returns highest score word' do
+    it 'returns highest score word' do
       word_list = ['home', 'word', 'hello', 'sound']
       expect(Scrabble.highest_score_from(word_list)).to eq 'home'
     end

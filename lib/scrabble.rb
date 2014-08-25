@@ -14,6 +14,9 @@ module Scrabble
   def self.score(word)
     return 0 if word.nil? || word.empty?
 
-    SCORES[word.upcase]
+    letters = word.split('')
+    letters.reduce(0) do |result, letter|
+      result + SCORES[letter.upcase]
+    end
   end
 end
