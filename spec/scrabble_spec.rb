@@ -36,7 +36,7 @@ describe Scrabble do
       expect(Scrabble.highest_score_from(['home', 'word', 'silence'])).to eq 'silence'
     end
 
-    xit 'returns the first word if both same length in case of a tie' do
+    it 'returns the first word if both same length in case of a tie' do
       expect(Scrabble.highest_score_from(['hi', 'word', 'ward'])).to eq 'word'
     end
   end
