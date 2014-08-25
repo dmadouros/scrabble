@@ -1,6 +1,7 @@
 require "scrabble/version"
 
 module Scrabble
+  ALL_TILES = 7
   SCORES = {
     "A" => 1, "B" => 3, "C" => 3, "D" => 2,
     "E" => 1, "F" => 4, "G" => 2, "H" => 4,
@@ -29,6 +30,8 @@ module Scrabble
   end
 
   def self.resolve_tie_between(two_words)
+    return two_words.first if two_words.first.length == ALL_TILES
+    return two_words.last if two_words.last.length == ALL_TILES
     return two_words.min_by { |word| word.length }
   end
 end
