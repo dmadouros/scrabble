@@ -1,5 +1,7 @@
 require "scrabble/version"
 
 module Scrabble
-  # Your code goes here...
+  def self.score(word)
+    0
+  end
 end
