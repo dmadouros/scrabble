@@ -21,17 +21,24 @@ module Scrabble
 
   def self.highest_score_from(words)
     words.max do |word1, word2|
-      score_comparison = score(word1) <=> score(word2)
-      score_comparison == 0 ? length_comparison(word1, word2) : score(word1) <=> score(word2)
+      [method(:score_comparator), method(:length_comparator)].map do |comparator|
+        comparator.call(word1, word2)
+      end.max
     end
   end
 
-  def self.length_comparison(word1, word2)
+  def self.score_comparator(word1, word2)
+    score(word1) <=> score(word2)
+  end
+
+  private_class_method :score_comparator
+
+  def self.length_comparator(word1, word2)
     all_tiles = 7
     return 1 if word1.length == all_tiles
     return -1 if word2.length == all_tiles
     word2.length <=> word1.length
   end
 
-  private_class_method :length_comparison
+  private_class_method :length_comparator
 end
