@@ -24,6 +24,7 @@ module Scrabble
 
     def initialize(text)
       @text = text
+      @comparator = ComparatorChain.new([ScoreComparator.new, LengthComparator.new])
     end
 
     def score
@@ -36,10 +37,16 @@ module Scrabble
       text.length
     end
 
+    def to_s
+      text
+    end
+
     private
 
+    attr_reader :comparator
+
     def <=>(other)
-      WordComparator.new(self, other).compare
+      comparator.compare(self, other)
     end
 
     def chars
@@ -51,37 +58,40 @@ module Scrabble
     end
   end
 
-  class ScrabbleComparator
-    def initialize(this, that)
-      @this = this
-      @that = that
+  class Comparator
+    def compare(this, that)
+      raise NotImplementedError
+    end
+  end
+
+  class ComparatorChain < Comparator
+    def initialize(comparators)
+      @comparators = comparators
+    end
+
+    def compare(this, that)
+      comparators.map do |comparator|
+        comparator.compare(this, that)
+      end.find do |comparison_result|
+        !comparison_result.zero?
+      end || 0
     end
 
     private
 
-    attr_reader :this, :that
+    attr_reader :comparators
   end
 
-  class WordComparator < ScrabbleComparator
-    def compare
-      ScoreComparator.new(this, that).tie? ? LengthComparator.new(this, that).compare : ScoreComparator.new(this, that).compare
-    end
-  end
-
-  class ScoreComparator < ScrabbleComparator
-    def tie?
-      compare == 0
-    end
-
-    def compare
+  class ScoreComparator < Comparator
+    def compare(this, that)
       this.score <=> that.score
     end
   end
 
-  class LengthComparator < ScrabbleComparator
+  class LengthComparator < Comparator
     MAX_LETTERS = 7
 
-    def compare
+    def compare(this, that)
       return 1 if this.length == MAX_LETTERS
       return -1 if that.length == MAX_LETTERS
       that.length <=> this.length
